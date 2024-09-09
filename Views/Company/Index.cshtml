@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Company>
+
+@{
+    ViewData["Title"] = "Companies";
+}
+
+<h2>Companies</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var company in Model)
+    {
+        <tr>
+            <td>@company.CompanyName</td>
+            <td>@company.Address</td>
+            @* <td>@(company.IsActive ? "Yes" : "No")</td> *@
+                <td>@if (company.IsActive)
+                    {
+                        <i class="fa-regular fa-circle-check fa-fade fa-xl" style="color: #00fa1d;"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-regular fa-circle-xmark fa-fade fa-xl" style="color: #fa0000;"></i>
+                        }
+                </td>
+                <td>
+                <a href="@Url.Action("Edit", "Company", new { id = company.CompanyId })" class="btn btn-primary btn-sm">Edit</a>
+                <a href="@Url.Action("Delete", "Company", new { id = company.CompanyId })" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
