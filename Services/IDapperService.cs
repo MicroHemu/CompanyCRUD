@@ -7,6 +7,8 @@ namespace CompanyCRUD.Services
 		Task<T> GetAsync<T>(string storedProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure);
 		Task<IEnumerable<T>> GetAllAsync<T>(string storedProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure);
 		Task<int> ExecuteAsync(string storedProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure);
-	}
+		Task<T> QuerySingleAsync<T>(string storedProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure);
+
+    }
 
 }

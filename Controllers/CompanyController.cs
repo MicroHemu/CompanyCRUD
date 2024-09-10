@@ -13,11 +13,21 @@ namespace CompanyCRUD.Controllers
 			_companyRepository = companyRepository;
 		}
 
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
 		{
-			var companies = await _companyRepository.GetAllCompaniesAsync();
-			return View(companies);
-		}
+            var totalCompanies = await _companyRepository.GetTotalCompaniesCountAsync();
+            var companies = await _companyRepository.GetPaginatedCompaniesAsync(pageNumber, pageSize);
+
+            var viewModel = new PaginatedCompanyViewModel
+            {
+                Companies = companies,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalCompanies
+            };
+
+            return View(viewModel);
+        }
 
 		public IActionResult Create()
 		{
@@ -72,5 +82,18 @@ namespace CompanyCRUD.Controllers
 			await _companyRepository.DeleteCompanyAsync(id);
 			return RedirectToAction(nameof(Index));
 		}
-	}
+
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> IsCompanyNameAvailable(Company company)
+        {
+			var exists = await _companyRepository.IsCompanyAvailable(company.CompanyName);
+
+            if (exists > 0)
+            {
+                return Json($"Company name '{company.CompanyName}' is already taken.");
+            }
+
+            return Json(true);
+        }
+    }
 }

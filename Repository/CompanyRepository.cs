@@ -52,6 +52,28 @@ namespace CompanyCRUD.Repository
 			var parameters = new { CompanyId = id };
 			return await _dapperService.ExecuteAsync("DeleteCompany", parameters, CommandType.StoredProcedure);
 		}
-	}
+
+        public async Task<IEnumerable<Company>> GetPaginatedCompaniesAsync(int pageNumber, int pageSize)
+        {
+            var parameters = new
+            {
+                Offset = (pageNumber - 1) * pageSize,
+                PageSize = pageSize
+            };
+
+            return await _dapperService.GetAllAsync<Company>("GetPaginatedCompanies", parameters, CommandType.StoredProcedure);
+        }
+
+        public async Task<int> GetTotalCompaniesCountAsync()
+        {
+            return await _dapperService.QuerySingleAsync<int>("GetTotalCompaniesCount", null, CommandType.StoredProcedure);
+        }
+
+        public async Task<int> IsCompanyAvailable(string name)
+		{
+            var parameters = new { Name = name };
+            return await _dapperService.ExecuteAsync("IsCompanyNameAvailable", parameters, CommandType.StoredProcedure);
+        }
+    }
 
 }

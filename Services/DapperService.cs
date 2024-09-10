@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace CompanyCRUD.Services
@@ -41,6 +42,14 @@ namespace CompanyCRUD.Services
 				return await connection.ExecuteAsync(storedProcedure, parameters, commandType: commandType);
 			}
 		}
-	}
+
+        public async Task<T> QuerySingleAsync<T>(string storedProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
+        {
+			using (var connection = GetConnection())
+			{
+                return await connection.QuerySingleOrDefaultAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+            }
+        }
+    }
 
 }
