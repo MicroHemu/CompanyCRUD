@@ -1,4 +1,4 @@
-﻿@model PaginatedCompanyViewModel
+﻿@model PaginatedList<Company>
 
 @{
     ViewData["Title"] = "Companies";
@@ -16,7 +16,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var company in Model.Companies)
+        @foreach (var company in Model)
         {
             <tr>
                 <td>@company.CompanyName</td>
@@ -24,30 +24,75 @@
                 <td>
                     @if (company.IsActive)
                     {
-                        <i class="fa-regular fa-circle-check fa-fade fa-xl" style="color: #00fa1d;"></i>
+                        <i class="fa-regular fa-circle-check fa-xl" style="color: #00fa1d;"></i>
                     }
                     else
                     {
-                        <i class="fa-regular fa-circle-xmark fa-fade fa-xl" style="color: #fa0000;"></i>
+                        <i class="fa-regular fa-circle-xmark fa-xl" style="color: #fa0000;"></i>
                     }
                 </td>
                 <td>
-                    <a href="@Url.Action("Edit", "Company", new { id = company.CompanyId })" class="btn btn-primary btn-sm">Edit</a>
-                    <a href="@Url.Action("Delete", "Company", new { id = company.CompanyId })" class="btn btn-danger btn-sm">Delete</a>
+                    @* class="btn btn-primary btn-sm" *@
+                    <a href="@Url.Action("Edit", "Company", new { id = company.CompanyId })"><i class="fa-regular fa-pen-to-square fa-xl m-1" style="color: #fac400;"></i></a>
+                    <a href="@Url.Action("Delete", "Company", new { id = company.CompanyId })"><i class="fa-regular fa-trash-can fa-xl" style="color: #ff0000;"></i></a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<!-- Pagination Links -->
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        @for (var i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
-            </li>
-        }
-    </ul>
-</nav>
+<!-- Pagination -->
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = 10 })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.PageNumber)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">@i</span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = 10 })">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = 10 })" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+<br/>
+<br/>

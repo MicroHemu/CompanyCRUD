@@ -15,18 +15,12 @@ namespace CompanyCRUD.Controllers
 
 		public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
 		{
-            var totalCompanies = await _companyRepository.GetTotalCompaniesCountAsync();
             var companies = await _companyRepository.GetPaginatedCompaniesAsync(pageNumber, pageSize);
+            var totalCompanies = await _companyRepository.GetTotalCompaniesCountAsync();
 
-            var viewModel = new PaginatedCompanyViewModel
-            {
-                Companies = companies,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalRecords = totalCompanies
-            };
+            var paginatedList = new PaginatedList<Company>(companies, totalCompanies, pageNumber, pageSize);
 
-            return View(viewModel);
+            return View(paginatedList);            
         }
 
 		public IActionResult Create()

@@ -55,12 +55,7 @@ namespace CompanyCRUD.Repository
 
         public async Task<IEnumerable<Company>> GetPaginatedCompaniesAsync(int pageNumber, int pageSize)
         {
-            var parameters = new
-            {
-                Offset = (pageNumber - 1) * pageSize,
-                PageSize = pageSize
-            };
-
+            var parameters = new { Offset = (pageNumber - 1) * pageSize, PageSize = pageSize };
             return await _dapperService.GetAllAsync<Company>("GetPaginatedCompanies", parameters, CommandType.StoredProcedure);
         }
 
